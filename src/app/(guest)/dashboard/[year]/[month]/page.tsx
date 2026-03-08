@@ -1,5 +1,3 @@
-"use client";
-
 import { FullScreenCalendar } from "@/components/fullscreen-calendar";
 
 const dummyEvents = [
