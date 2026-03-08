@@ -178,7 +178,16 @@
   h1 {
     @apply font-alpino text-6xl font-black;
   }
+  h2 {
+    @apply font-sans text-5xl font-bold;
+  }
+  h3 {
+    @apply font-sans text-4xl font-bold;
+  }
+  h4 {
+    @apply font-sans text-3xl font-bold;
+  }
   p {
-    @apply font-sans;
+    @apply font-sans text-base;
   }
 }
