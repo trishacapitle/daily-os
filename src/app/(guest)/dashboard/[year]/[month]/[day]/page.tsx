@@ -11,6 +11,7 @@ import { DragDropProvider } from "@dnd-kit/react";
 import { Draggable } from "@/components/ui/draggable";
 import { Droppable } from "@/components/ui/droppable";
 import { useState } from "react";
+import { Toolbar } from "@/components/toolbar";
 
 export default function DayView() {
   const params = useParams();
@@ -87,6 +88,7 @@ export default function DayView() {
         </div>
         {!target && <Draggable />}
       </div>
+      <Toolbar />
     </DragDropProvider>
   );
 }
