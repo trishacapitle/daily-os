@@ -13,16 +13,13 @@ import { Droppable } from "@/components/ui/droppable";
 import { useState } from "react";
 import { Toolbar } from "@/components/toolbar";
 import Menu from "@/components/menu";
+import { DayViewParams } from "@/types/dayview-params";
 
 export default function DayView() {
   const params = useParams();
   const [target, setTarget] = useState<string | null>(null);
 
-  const { year, month, day } = params as {
-    year: string;
-    month: string;
-    day: string;
-  };
+  const { year, month, day } = params as DayViewParams;
 
   const date = new Date(`${year}-${month}-${day}`);
 
