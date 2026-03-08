@@ -8,8 +8,8 @@ import {
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import { DragDropProvider } from "@dnd-kit/react";
-import { Draggable } from "@/components/draggable";
-import { Droppable } from "@/components/droppable";
+import { Draggable } from "@/components/ui/draggable";
+import { Droppable } from "@/components/ui/droppable";
 import { useState } from "react";
 
 export default function DayView() {
