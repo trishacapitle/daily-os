@@ -1,50 +1,38 @@
 import {
-  Activity,
-  Component,
-  HomeIcon,
-  Mail,
-  Package,
-  ScrollText,
-  SunMoon,
+  HouseHeart,
+  ListTodo,
+  NotepadText,
+  SmilePlus,
+  SquareChartGantt,
 } from "lucide-react";
 
 import { Dock, DockIcon, DockItem, DockLabel } from "@/components/ui/dock";
 
 const data = [
   {
-    title: "Home",
-    icon: <HomeIcon className="text-foreground h-full w-full" />,
-    href: "#",
+    title: "Tasks",
+    icon: <ListTodo className="text-foreground h-full w-full" />,
+    component: "#",
   },
   {
-    title: "Products",
-    icon: <Package className="text-foreground h-full w-full" />,
-    href: "#",
+    title: "Time Blocks",
+    icon: <SquareChartGantt className="text-foreground h-full w-full" />,
+    component: "#",
   },
   {
-    title: "Components",
-    icon: <Component className="text-foreground h-full w-full" />,
-    href: "#",
+    title: "Notes",
+    icon: <NotepadText className="text-foreground h-full w-full" />,
+    component: "#",
   },
   {
-    title: "Activity",
-    icon: <Activity className="text-foreground h-full w-full" />,
-    href: "#",
+    title: "Mood",
+    icon: <SmilePlus className="text-foreground h-full w-full" />,
+    component: "#",
   },
   {
-    title: "Change Log",
-    icon: <ScrollText className="text-foreground h-full w-full" />,
-    href: "#",
-  },
-  {
-    title: "Email",
-    icon: <Mail className="text-foreground h-full w-full" />,
-    href: "#",
-  },
-  {
-    title: "Theme",
-    icon: <SunMoon className="text-foreground h-full w-full" />,
-    href: "#",
+    title: "Habits",
+    icon: <HouseHeart className="text-foreground h-full w-full" />,
+    component: "#",
   },
 ];
 
