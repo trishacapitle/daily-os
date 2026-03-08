@@ -105,7 +105,6 @@ const dummyEvents = [
 export default function Dashboard() {
   return (
     <div className="flex h-screen flex-1 p-6 flex-col gap-6">
-      <h2>Goodmorning, user!</h2>
       <FullScreenCalendar data={dummyEvents} />
     </div>
   );
