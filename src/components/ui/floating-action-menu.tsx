@@ -26,7 +26,7 @@ const FloatingActionMenu = ({
   };
 
   return (
-    <div className={cn("fixed right-6 top-6 z-50", className)}>
+    <div className={cn("fixed top-6 right-6 z-50", className)}>
       <Button onClick={toggleMenu} className="bg-card h-12 w-12 rounded-full">
         <motion.div
           animate={{ rotate: isOpen ? 180 : 0 }}
@@ -55,7 +55,7 @@ const FloatingActionMenu = ({
               damping: 20,
               delay: 0.1,
             }}
-            className="absolute right-0 top-16 mb-2"
+            className="absolute top-16 right-0 mb-2"
           >
             <div className="flex flex-col items-end gap-2">
               {options.map((option, index) => (
