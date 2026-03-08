@@ -3,3 +3,5 @@ export type DayViewParams = {
   month: string;
   day: string;
 };
+
+export type ModuleType = "tasks" | "timeBlocks" | "notes" | "mood" | "habits";
