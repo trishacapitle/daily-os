@@ -123,7 +123,7 @@ export function FullScreenCalendar({ data }: FullScreenCalendarProps) {
       </div>
 
       {/* Days Grid */}
-      <div className="grid auto-rows-[120px] grid-cols-7">
+      <div className="grid auto-rows-[110px] grid-cols-7">
         {days.map((day, dayIdx) => (
           <DayCell
             key={day.toISOString()}
