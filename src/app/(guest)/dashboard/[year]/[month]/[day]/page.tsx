@@ -13,6 +13,9 @@ import { useState } from "react";
 import { Toolbar } from "@/components/toolbar";
 import Menu from "@/components/menu";
 import { DayViewParams } from "@/types/dashboard-params";
+import { TasksModule } from "@/components/tasks-module";
+import { PanelModule } from "@/components/ui/panel-module";
+import { DropPlaceholder } from "@/components/ui/drop-placeholder";
 
 type ModuleType = "tasks" | "timeBlocks" | "notes" | "mood" | "habits";
 
@@ -35,20 +38,53 @@ export default function DayView() {
     C: null,
   });
 
-  function renderModule(module: ModuleType | null) {
-    if (!module) return null;
+  function renderModule(module: ModuleType | null, panel: keyof LayoutState) {
+    if (!module) {
+      return <DropPlaceholder />;
+    }
+
+    const remove = () =>
+      setLayout((prev) => ({
+        ...prev,
+        [panel]: null,
+      }));
 
     switch (module) {
       case "tasks":
-        return <div>Tasks Module</div>;
+        return (
+          <PanelModule onRemove={remove}>
+            <TasksModule />
+          </PanelModule>
+        );
+
       case "timeBlocks":
-        return <div>Time Blocks Module</div>;
+        return (
+          <PanelModule onRemove={remove}>
+            <div>Time Blocks Module</div>
+          </PanelModule>
+        );
+
       case "notes":
-        return <div>Notes Module</div>;
+        return (
+          <PanelModule onRemove={remove}>
+            <div>Notes Module</div>
+          </PanelModule>
+        );
+
       case "mood":
-        return <div>Mood Module</div>;
+        return (
+          <PanelModule onRemove={remove}>
+            <div>Mood Module</div>
+          </PanelModule>
+        );
+
       case "habits":
-        return <div>Habits Module</div>;
+        return (
+          <PanelModule onRemove={remove}>
+            <div>Habits Module</div>
+          </PanelModule>
+        );
+
       default:
         return null;
     }
@@ -93,7 +129,7 @@ export default function DayView() {
           >
             <ResizablePanel defaultSize={50}>
               <div className="flex h-[calc(100vh-132px)] items-center justify-center">
-                <Droppable id="A">{renderModule(layout.A)}</Droppable>
+                <Droppable id="A">{renderModule(layout.A, "A")}</Droppable>
               </div>
             </ResizablePanel>
 
@@ -103,7 +139,7 @@ export default function DayView() {
               <ResizablePanelGroup orientation="vertical">
                 <ResizablePanel defaultSize={50}>
                   <div className="flex h-full items-center justify-center">
-                    <Droppable id="B">{renderModule(layout.B)}</Droppable>
+                    <Droppable id="B">{renderModule(layout.B, "B")}</Droppable>
                   </div>
                 </ResizablePanel>
 
@@ -111,7 +147,7 @@ export default function DayView() {
 
                 <ResizablePanel defaultSize={50}>
                   <div className="flex h-full items-center justify-center">
-                    <Droppable id="C">{renderModule(layout.C)}</Droppable>
+                    <Droppable id="C">{renderModule(layout.C, "C")}</Droppable>
                   </div>
                 </ResizablePanel>
               </ResizablePanelGroup>
