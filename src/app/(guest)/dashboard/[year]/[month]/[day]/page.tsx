@@ -8,34 +8,73 @@ import {
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import { DragDropProvider } from "@dnd-kit/react";
-import { Draggable } from "@/components/ui/draggable";
 import { Droppable } from "@/components/ui/droppable";
 import { useState } from "react";
 import { Toolbar } from "@/components/toolbar";
 import Menu from "@/components/menu";
-import { DayViewParams } from "@/types/dayview-params";
+import { DayViewParams } from "@/types/dashboard-params";
+
+type ModuleType = "tasks" | "timeBlocks" | "notes" | "mood" | "habits";
+
+type LayoutState = {
+  A: ModuleType | null;
+  B: ModuleType | null;
+  C: ModuleType | null;
+};
 
 export default function DayView() {
   const params = useParams();
-  const [target, setTarget] = useState<string | null>(null);
 
   const { year, month, day } = params as DayViewParams;
 
   const date = new Date(`${year}-${month}-${day}`);
+
+  const [layout, setLayout] = useState<LayoutState>({
+    A: null,
+    B: null,
+    C: null,
+  });
+
+  function renderModule(module: ModuleType | null) {
+    if (!module) return null;
+
+    switch (module) {
+      case "tasks":
+        return <div>Tasks Module</div>;
+      case "timeBlocks":
+        return <div>Time Blocks Module</div>;
+      case "notes":
+        return <div>Notes Module</div>;
+      case "mood":
+        return <div>Mood Module</div>;
+      case "habits":
+        return <div>Habits Module</div>;
+      default:
+        return null;
+    }
+  }
 
   return (
     <DragDropProvider
       onDragEnd={(event) => {
         if (event.canceled) return;
 
-        const dropId = event.operation.target?.id as string | undefined;
+        const moduleType = event.operation.source?.data?.module as
+          | ModuleType
+          | undefined;
 
-        if (dropId) {
-          setTarget(dropId);
-        }
+        const dropId = event.operation.target?.id as keyof LayoutState;
+
+        if (!moduleType || !dropId) return;
+
+        setLayout((prev) => ({
+          ...prev,
+          [dropId]: moduleType,
+        }));
       }}
     >
       <Menu />
+
       <div className="relative flex min-h-screen flex-col">
         {/* Header */}
         <header className="flex flex-col items-center justify-center px-6 pt-6">
@@ -54,7 +93,7 @@ export default function DayView() {
           >
             <ResizablePanel defaultSize={50}>
               <div className="flex h-[calc(100vh-132px)] items-center justify-center">
-                <Droppable id="A">{target === "A" && <Draggable />}</Droppable>
+                <Droppable id="A">{renderModule(layout.A)}</Droppable>
               </div>
             </ResizablePanel>
 
@@ -64,9 +103,7 @@ export default function DayView() {
               <ResizablePanelGroup orientation="vertical">
                 <ResizablePanel defaultSize={50}>
                   <div className="flex h-full items-center justify-center">
-                    <Droppable id="B">
-                      {target === "B" && <Draggable />}
-                    </Droppable>
+                    <Droppable id="B">{renderModule(layout.B)}</Droppable>
                   </div>
                 </ResizablePanel>
 
@@ -74,16 +111,14 @@ export default function DayView() {
 
                 <ResizablePanel defaultSize={50}>
                   <div className="flex h-full items-center justify-center">
-                    {" "}
-                    <Droppable id="C">
-                      {target === "C" && <Draggable />}
-                    </Droppable>
+                    <Droppable id="C">{renderModule(layout.C)}</Droppable>
                   </div>
                 </ResizablePanel>
               </ResizablePanelGroup>
             </ResizablePanel>
           </ResizablePanelGroup>
         </div>
+
         <Toolbar />
       </div>
     </DragDropProvider>
