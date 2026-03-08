@@ -12,6 +12,7 @@ import { Draggable } from "@/components/ui/draggable";
 import { Droppable } from "@/components/ui/droppable";
 import { useState } from "react";
 import { Toolbar } from "@/components/toolbar";
+import Menu from "@/components/menu";
 
 export default function DayView() {
   const params = useParams();
@@ -37,9 +38,10 @@ export default function DayView() {
         }
       }}
     >
-      <div className="flex min-h-screen flex-col">
+      <Menu />
+      <div className="relative flex min-h-screen flex-col">
         {/* Header */}
-        <header className="px-6 py-6">
+        <header className="flex flex-col items-center justify-center px-6 pt-6">
           <h2 className="text-5xl font-bold uppercase">
             {format(date, "MMMM")}
             <span className="text-primary"> {format(date, "d")} </span>
@@ -48,14 +50,13 @@ export default function DayView() {
         </header>
 
         {/* Workspace */}
-
-        <div className="flex w-full p-4">
+        <div className="flex w-full px-6 pt-4">
           <ResizablePanelGroup
             orientation="horizontal"
-            className="rounded-lg border"
+            className="h-full rounded-lg border"
           >
             <ResizablePanel defaultSize={50}>
-              <div className="flex h-150 items-center justify-center">
+              <div className="flex h-[calc(100vh-132px)] items-center justify-center">
                 <Droppable id="A">{target === "A" && <Draggable />}</Droppable>
               </div>
             </ResizablePanel>
@@ -64,7 +65,7 @@ export default function DayView() {
 
             <ResizablePanel defaultSize={50}>
               <ResizablePanelGroup orientation="vertical">
-                <ResizablePanel defaultSize={25}>
+                <ResizablePanel defaultSize={50}>
                   <div className="flex h-full items-center justify-center">
                     <Droppable id="B">
                       {target === "B" && <Draggable />}
@@ -74,7 +75,7 @@ export default function DayView() {
 
                 <ResizableHandle />
 
-                <ResizablePanel defaultSize={75}>
+                <ResizablePanel defaultSize={50}>
                   <div className="flex h-full items-center justify-center">
                     {" "}
                     <Droppable id="C">
@@ -86,9 +87,8 @@ export default function DayView() {
             </ResizablePanel>
           </ResizablePanelGroup>
         </div>
-        {!target && <Draggable />}
+        <Toolbar />
       </div>
-      <Toolbar />
     </DragDropProvider>
   );
 }
