@@ -116,7 +116,7 @@ export function TasksModule() {
       </div>
 
       {/* Task List */}
-      <ScrollArea className="flex-1">
+      <ScrollArea className="h-full flex-1">
         <div className="flex flex-col gap-2 pr-3">
           {tasks.map((task) => (
             <div
