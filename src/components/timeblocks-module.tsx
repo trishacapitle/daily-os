@@ -55,6 +55,12 @@ export function TimeBlocksModule() {
   const createStart = useRef<number>(0);
   const createEnd = useRef<number>(0);
 
+  function formatTime(minutes: number) {
+    const h = Math.floor(minutes / 60);
+    const m = minutes % 60;
+    return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+  }
+
   function toMinutes(time: string) {
     const [h, m] = time.split(":").map(Number);
     return h * 60 + m;
@@ -300,45 +306,69 @@ export function TimeBlocksModule() {
   }
 
   const layout = useMemo(() => {
-    const events = blocks.map((b) => ({
-      ...b,
-      startM: toMinutes(b.start),
-      endM: toMinutes(b.end),
-    }));
+    const events = blocks
+      .map((b) => ({
+        ...b,
+        startM: toMinutes(b.start),
+        endM: toMinutes(b.end),
+      }))
+      .sort((a, b) => a.startM - b.startM);
 
     const columns: (typeof events)[] = [];
+    const positioned: any[] = [];
 
-    events.forEach((event) => {
-      let placed = false;
+    for (const event of events) {
+      let col = 0;
 
-      for (const col of columns) {
-        const last = col[col.length - 1];
-        if (event.startM >= last.endM) {
-          col.push(event);
-          placed = true;
+      while (true) {
+        if (!columns[col]) columns[col] = [];
+
+        const conflict = columns[col].some(
+          (e) => event.startM < e.endM && event.endM > e.startM,
+        );
+
+        if (!conflict) {
+          columns[col].push(event);
           break;
         }
+
+        col++;
       }
 
-      if (!placed) columns.push([event]);
+      positioned.push({
+        ...event,
+        col,
+      });
+    }
+
+    const totalCols = columns.length;
+
+    return positioned.map((event) => {
+      let span = 1;
+
+      for (let i = event.col + 1; i < totalCols; i++) {
+        const conflict = positioned.some(
+          (e) => e.col === i && event.startM < e.endM && event.endM > e.startM,
+        );
+
+        if (conflict) break;
+
+        span++;
+      }
+
+      return {
+        ...event,
+        cols: totalCols,
+        span,
+      };
     });
-
-    const total = columns.length;
-
-    return columns.flatMap((col, colIndex) =>
-      col.map((e) => ({
-        ...e,
-        col: colIndex,
-        cols: total,
-      })),
-    );
   }, [blocks]);
 
   return (
     <div className="flex h-full min-h-0 w-full flex-col gap-4 overflow-hidden p-4">
       <h3 className="text-lg font-semibold">Time Blocks</h3>
 
-      <ScrollArea className="h-full flex-1" ref={scrollRef as any}>
+      <ScrollArea className="h-full flex-1" ref={scrollRef}>
         <div className="grid h-225 grid-cols-[60px_1fr]">
           <div className="relative border-r">
             {Array.from({ length: 25 }).map((_, i) => {
@@ -379,12 +409,16 @@ export function TimeBlocksModule() {
 
                 return (
                   <div
-                    className="bg-muted/40 absolute right-2 left-2 rounded-md border border-dashed"
+                    className="bg-muted/40 absolute right-2 left-2 rounded-md border border-dashed p-2"
                     style={{
                       top: `${top}%`,
                       height: `${height}%`,
                     }}
-                  />
+                  >
+                    <div className="text-muted-foreground text-sm font-medium">
+                      {formatTime(start)} — {formatTime(end)}
+                    </div>
+                  </div>
                 );
               })()}
 
@@ -392,8 +426,9 @@ export function TimeBlocksModule() {
               const top = ((block.startM - dayStart) / totalMinutes) * 100;
               const height = ((block.endM - block.startM) / totalMinutes) * 100;
 
-              const width = 100 / block.cols;
-              const left = block.col * width;
+              const columnWidth = 100 / block.cols;
+              const width = columnWidth * block.span;
+              const left = columnWidth * block.col;
 
               return (
                 <div
