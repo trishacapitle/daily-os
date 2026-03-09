@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/resizable";
 import { DragDropProvider } from "@dnd-kit/react";
 import { Droppable } from "@/components/ui/droppable";
+import { Draggable } from "@/components/ui/draggable";
 import { useState } from "react";
 import { Toolbar } from "@/components/toolbar";
 import Menu from "@/components/menu";
@@ -16,6 +17,7 @@ import { DayViewParams } from "@/types/dashboard-params";
 import { TasksModule } from "@/components/tasks-module";
 import { PanelModule } from "@/components/ui/panel-module";
 import { DropPlaceholder } from "@/components/ui/drop-placeholder";
+import { TimeBlocksModule } from "@/components/timeblocks-module";
 
 type ModuleType = "tasks" | "timeBlocks" | "notes" | "mood" | "habits";
 
@@ -27,7 +29,6 @@ type LayoutState = {
 
 export default function DayView() {
   const params = useParams();
-
   const { year, month, day } = params as DayViewParams;
 
   const date = new Date(`${year}-${month}-${day}`);
@@ -49,41 +50,29 @@ export default function DayView() {
         [panel]: null,
       }));
 
+    const draggableModule = `${module}|${panel}`;
+
+    const draggable = (content: React.ReactNode) => (
+      <Draggable module={draggableModule as ModuleType}>
+        <PanelModule onRemove={remove}>{content}</PanelModule>
+      </Draggable>
+    );
+
     switch (module) {
       case "tasks":
-        return (
-          <PanelModule onRemove={remove}>
-            <TasksModule />
-          </PanelModule>
-        );
+        return draggable(<TasksModule />);
 
       case "timeBlocks":
-        return (
-          <PanelModule onRemove={remove}>
-            <div>Time Blocks Module</div>
-          </PanelModule>
-        );
+        return draggable(<TimeBlocksModule />);
 
       case "notes":
-        return (
-          <PanelModule onRemove={remove}>
-            <div>Notes Module</div>
-          </PanelModule>
-        );
+        return draggable(<div>Notes Module</div>);
 
       case "mood":
-        return (
-          <PanelModule onRemove={remove}>
-            <div>Mood Module</div>
-          </PanelModule>
-        );
+        return draggable(<div>Mood Module</div>);
 
       case "habits":
-        return (
-          <PanelModule onRemove={remove}>
-            <div>Habits Module</div>
-          </PanelModule>
-        );
+        return draggable(<div>Habits Module</div>);
 
       default:
         return null;
@@ -95,18 +84,40 @@ export default function DayView() {
       onDragEnd={(event) => {
         if (event.canceled) return;
 
-        const moduleType = event.operation.source?.data?.module as
-          | ModuleType
+        const moduleData = event.operation.source?.data?.module as
+          | string
           | undefined;
 
-        const dropId = event.operation.target?.id as keyof LayoutState;
+        const targetPanel = event.operation.target?.id as keyof LayoutState;
 
-        if (!moduleType || !dropId) return;
+        if (!moduleData || !targetPanel) return;
 
-        setLayout((prev) => ({
-          ...prev,
-          [dropId]: moduleType,
-        }));
+        const [moduleType, fromPanel] = moduleData.split("|") as [
+          ModuleType,
+          keyof LayoutState | undefined,
+        ];
+
+        setLayout((prev) => {
+          const next = { ...prev };
+
+          // toolbar → panel
+          if (!fromPanel) {
+            next[targetPanel] = moduleType;
+            return next;
+          }
+
+          // panel → same panel
+          if (fromPanel === targetPanel) return prev;
+
+          const sourceModule = next[fromPanel];
+          const targetModule = next[targetPanel];
+
+          // swap
+          next[targetPanel] = sourceModule;
+          next[fromPanel] = targetModule;
+
+          return next;
+        });
       }}
     >
       <Menu />
