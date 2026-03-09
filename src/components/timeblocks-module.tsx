@@ -369,7 +369,7 @@ export function TimeBlocksModule() {
       <h3 className="text-lg font-semibold">Time Blocks</h3>
 
       <ScrollArea className="h-full flex-1" ref={scrollRef}>
-        <div className="grid h-225 grid-cols-[60px_1fr]">
+        <div className="grid h-400 grid-cols-[50px_1fr]">
           <div className="relative border-r">
             {Array.from({ length: 25 }).map((_, i) => {
               const hour = i;
