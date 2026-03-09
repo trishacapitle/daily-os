@@ -16,6 +16,7 @@ import { DayViewParams } from "@/types/dashboard-params";
 import { TasksModule } from "@/components/tasks-module";
 import { PanelModule } from "@/components/ui/panel-module";
 import { DropPlaceholder } from "@/components/ui/drop-placeholder";
+import { TimeBlocksModule } from "@/components/timeblocks-module";
 
 type ModuleType = "tasks" | "timeBlocks" | "notes" | "mood" | "habits";
 
@@ -60,7 +61,7 @@ export default function DayView() {
       case "timeBlocks":
         return (
           <PanelModule onRemove={remove}>
-            <div>Time Blocks Module</div>
+            <TimeBlocksModule />
           </PanelModule>
         );
 
